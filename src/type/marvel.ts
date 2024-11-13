@@ -1,4 +1,4 @@
-export type MarvelApiResponse = {
+export type MarvelHeroesListResponse = {
   code: number;
   status: string;
   copyright: string;
@@ -10,11 +10,11 @@ export type MarvelApiResponse = {
     limit: number;
     total: number;
     count: number;
-    results: Character[];
+    results: Hero[];
   };
 };
 
-export type Character = {
+export type Hero = {
   id: number;
   name: string;
   description: string;

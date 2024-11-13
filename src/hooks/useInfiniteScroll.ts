@@ -1,74 +1,44 @@
-import {useState, useEffect, useCallback} from 'react';
-import {create, ApiResponse} from 'apisauce';
-import useGet from './useGet';
-import {MarvelApiResponse} from '@/type/character.ts';
+import {useCallback} from 'react';
+import {marvelProxy} from '@/util/proxy.ts';
+import useMarvelStore from '@/store/marvel.ts';
+import {API_MARVEL} from '@/conf/env.ts';
 
-export interface UseInfiniteScrollProps<RestData> {
-  api: ReturnType<typeof create>;
-  url: string;
-  options?: object;
-  initialPage?: number;
-  itemsPerPage?: number;
-  uniqueKey: keyof RestData;
+export interface ParamsInfiniteScroll {
+  limit: number;
+  offset: number;
 }
 
-export const useInfiniteScroll = <RestData extends Record<string, any>>({
-  api,
-  url,
-  options = {},
-  initialPage = 0,
-  itemsPerPage = 20,
-  uniqueKey,
-}: UseInfiniteScrollProps<RestData>) => {
-  const [page, setPage] = useState(initialPage);
-  const [items, setItems] = useState<RestData[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+export interface IUseInfiniteScroll {
+  url: string;
+  params: ParamsInfiniteScroll;
+}
 
-  const {error, loading, reFetch} = useGet<MarvelApiResponse>({
-    api,
-    url,
-    options: {...options, limit: itemsPerPage},
-    preventOnCall: true,
-  });
+const useInfiniteScroll = ({url, params}: IUseInfiniteScroll) => {
+  const {data, isLoading, error, appendData, setIsLoading, setError} =
+    useMarvelStore();
 
-  const loadMore = useCallback(async () => {
-    if (loading || !hasMore) {
-      return;
-    }
+  const handleFetch = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
-    const response: ApiResponse<MarvelApiResponse> = await reFetch({
-      params: {offset: page * itemsPerPage},
+    const newUrl = new URL(url, API_MARVEL);
+    Object.entries(params).forEach(([key, value]) => {
+      newUrl.searchParams.append(key, value.toString());
     });
 
-    if (response.ok && response.data) {
-      const newData = response.data.data.results as unknown as RestData[];
-      setItems(prevItems => {
-        const newItems = newData.filter(
-          newItem =>
-            !prevItems.some(
-              existingItem => existingItem[uniqueKey] === newItem[uniqueKey],
-            ),
-        );
-        return [...prevItems, ...newItems];
-      });
-
-      setPage(prevPage => prevPage + 1);
-      setHasMore(
-        newData.length === itemsPerPage &&
-          response.data.data.total > page * itemsPerPage,
+    try {
+      const response = await marvelProxy[newUrl.toString()];
+      appendData(response);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error('An unknown error occurred'),
       );
+    } finally {
+      setIsLoading(false);
     }
-  }, [loading, hasMore, page, reFetch, itemsPerPage, uniqueKey]);
+  }, [url, params, appendData, setError, setIsLoading]);
 
-  useEffect(() => {
-    loadMore().then();
-  }, []);
-
-  return {
-    items,
-    loading,
-    error,
-    loadMore,
-    hasMore,
-  };
+  return {data, isLoading, error, handleFetch};
 };
+
+export default useInfiniteScroll;

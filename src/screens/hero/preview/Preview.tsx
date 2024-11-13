@@ -1,6 +1,6 @@
 import {Text, Image, Pressable, StyleSheet, View} from 'react-native';
 import {FC} from 'react';
-import {Character} from '@/type/character.ts';
+
 import {imageMarvel} from '@/conf/imageMarvel.ts';
 import {Colors} from '@/theme/Theme.ts';
 import {
@@ -9,8 +9,9 @@ import {
   LibraryBig,
   BookOpenText,
 } from 'lucide-react-native';
+import {Hero} from '@/type/marvel.ts';
 
-export const Preview: FC<Character> = ({
+export const Preview: FC<Hero> = ({
   thumbnail,
   name,
   comics,

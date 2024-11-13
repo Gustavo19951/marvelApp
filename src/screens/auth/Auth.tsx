@@ -77,19 +77,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     borderRadius: 16,
     width: '100%',
-    backgroundColor: Colors.foreground,
+    backgroundColor: `${Colors.foreground}D6`,
     justifyContent: 'space-between',
     alignItems: 'center',
     rowGap: 22,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
   },
   text: {
     fontFamily: 'OpenSans',
