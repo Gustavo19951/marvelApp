@@ -4,12 +4,10 @@ import {Auth} from '@/screens/auth/Auth.tsx';
 import {SharedElementConf} from '@/navigators/conf/sharedElement.ts';
 import useAuthStore from '@/store/auth.ts';
 import {Home} from '@/screens/home/Home.tsx';
-import {About} from '@/screens/about/About.tsx';
 import {rootScreenOptions} from '@/navigators/conf/animation.ts';
 import {HeroList} from '@/screens/hero/HeroList.tsx';
 import {BasicHeader} from '@/navigators/conf/basicHeader.tsx';
 import {Hero, HeroRouteProps} from '@/screens/hero/Hero.tsx';
-import {RouteProp} from '@react-navigation/native';
 import {Comics} from '@/screens/comics/Comics.tsx';
 import {Events} from '@/screens/events/Events.tsx';
 import {Series} from '@/screens/series/Series.tsx';
@@ -49,14 +47,6 @@ export const Root = () => {
             title: 'Series',
           }}
           component={Series}
-        />
-        <RootStack.Screen
-          name="about"
-          options={{
-            ...BasicHeader,
-            title: 'Acerca de mi',
-          }}
-          component={About}
         />
         <RootStack.Screen
           name="heroList"

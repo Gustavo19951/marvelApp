@@ -9,7 +9,6 @@ export type RootRouteList = {
   series: undefined;
   heroList: undefined;
   hero: {item: Hero; image: string};
-  about: undefined;
 };
 
 export type RootNavigationProp = StackNavigationProp<

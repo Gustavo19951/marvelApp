@@ -1,4 +1,4 @@
-import {FlatList, Image, StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {IStateOption, StateOption} from './StateOption.tsx';
 import AvengersSVG from '@/assets/icons/avengers.svg';
 import MarvelSVG from '@/assets/icons/marvel.svg';
@@ -29,19 +29,6 @@ export const States = () => {
       title: 'Eventos',
       icon: <EventSVG />,
       navigateTo: 'events',
-    },
-    {
-      id: '5',
-      title: 'Acerca de mi',
-      icon: (
-        <Image
-          source={require('@/assets/img/picture.jpg')}
-          height={35}
-          width={35}
-          style={styles.avatarImage}
-        />
-      ),
-      navigateTo: 'about',
     },
   ];
   return (
