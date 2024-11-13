@@ -10,6 +10,7 @@ import {
   LibraryBig,
 } from 'lucide-react-native';
 import {Colors} from '@/theme/Theme.ts';
+import {HeroComics} from '@/screens/hero/details/HeroComics.tsx';
 
 export type HeroRouteProps = {
   route: RouteProp<RootRouteList, 'hero'>;
@@ -17,7 +18,7 @@ export type HeroRouteProps = {
 };
 export const Hero: FC<HeroRouteProps> = ({route}) => {
   const {item, image} = route.params;
-  const {comics, events, series, stories} = item;
+  const {id, comics, events, series, stories} = item;
   return (
     <>
       <View style={styles.root}>
@@ -28,27 +29,30 @@ export const Hero: FC<HeroRouteProps> = ({route}) => {
             resizeMode="cover"
           />
         </SharedElement>
-        <HeroStats
-          icon={<BookOpenText />}
-          value={comics.available}
-          title="Comics disponibles"
-        />
-        <HeroStats
-          icon={<CalendarDays />}
-          value={events.available}
-          title="Eventos"
-        />
-        <HeroStats
-          icon={<Clapperboard />}
-          value={series.available}
-          title="Series disponibles"
-        />
-        <HeroStats
-          icon={<LibraryBig />}
-          value={stories.available}
-          title="Libros disponibles"
-        />
+        <View style={styles.statsContent}>
+          <HeroStats
+            icon={<BookOpenText />}
+            value={comics.available}
+            title="# Comics"
+          />
+          <HeroStats
+            icon={<CalendarDays />}
+            value={events.available}
+            title="# Eventos"
+          />
+          <HeroStats
+            icon={<Clapperboard />}
+            value={series.available}
+            title="# Series"
+          />
+          <HeroStats
+            icon={<LibraryBig />}
+            value={stories.available}
+            title="# Libros"
+          />
+        </View>
       </View>
+      <HeroComics id={id} />
     </>
   );
 };
@@ -65,7 +69,7 @@ const HeroStats: FC<IHeroStats> = ({value, icon, title}) => {
       <View style={styles.cardTitle}>
         {cloneElement(icon, {
           color: Colors.white,
-          size: 30,
+          size: 26,
           strokeWidth: 1,
         })}
         <Text style={styles.cardNumber}>{title}</Text>
@@ -80,12 +84,19 @@ const styles = StyleSheet.create({
     paddingVertical: 22,
     paddingHorizontal: 22,
     rowGap: 10,
+    flexDirection: 'row',
+    columnGap: 5,
   },
   image: {
+    height: 200,
     aspectRatio: 1,
     borderRadius: 10,
   },
+  statsContent: {
+    rowGap: 5,
+  },
   cardStats: {
+    width: '66%',
     backgroundColor: Colors.gray['900'],
     padding: 10,
     flexDirection: 'row',
@@ -98,7 +109,7 @@ const styles = StyleSheet.create({
     columnGap: 5,
   },
   cardNumber: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

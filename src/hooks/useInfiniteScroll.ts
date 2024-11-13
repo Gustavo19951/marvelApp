@@ -1,7 +1,8 @@
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import {marvelProxy} from '@/util/proxy.ts';
-import useHeroStore from '@/store/marvel.ts';
 import {API_MARVEL} from '@/conf/env.ts';
+import {useComicStore, useHeroStore} from '@/store/marvel.ts';
+import {Comic, Hero} from '@/type/marvel.ts';
 
 export interface ParamsInfiniteScroll {
   limit: number;
@@ -10,11 +11,22 @@ export interface ParamsInfiniteScroll {
 
 export interface IUseInfiniteScroll {
   url: string;
+  type: string;
 }
 
-const useInfiniteScroll = ({url}: IUseInfiniteScroll) => {
-  const {data, isLoading, error, appendData, setIsLoading, setError} =
-    useHeroStore();
+const isHeroStore = (type: string): type is 'hero' => type === 'hero';
+
+const useInfiniteScroll = <T extends Comic[] & Hero[]>({
+  url,
+  type,
+}: IUseInfiniteScroll) => {
+  const heroStore = useHeroStore();
+  const comicStore = useComicStore();
+
+  const store = isHeroStore(type) ? heroStore : comicStore;
+
+  const {data, isLoading, error, appendData, setIsLoading, setError} = store;
+  const [hasMore, setHasMore] = useState(true);
 
   const handleFetch = useCallback(
     async (params: ParamsInfiniteScroll) => {
@@ -30,7 +42,10 @@ const useInfiniteScroll = ({url}: IUseInfiniteScroll) => {
       try {
         const response = await marvelProxy[cleanedUrl];
         if (response.data.results) {
-          appendData(response.data.results);
+          appendData(response.data.results as T);
+          if (response.data.results.length < params.limit) {
+            setHasMore(false);
+          }
         }
       } catch (err) {
         setError(
@@ -43,7 +58,7 @@ const useInfiniteScroll = ({url}: IUseInfiniteScroll) => {
     [url, appendData, setError, setIsLoading],
   );
 
-  return {data, isLoading, error, handleFetch};
+  return {data, isLoading, error, hasMore, handleFetch};
 };
 
 export default useInfiniteScroll;

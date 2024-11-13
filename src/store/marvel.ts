@@ -1,36 +1,38 @@
 import {create} from 'zustand';
-import {Hero} from '@/type/marvel.ts';
+import {Comic, Hero} from '@/type/marvel.ts';
 
-interface MarvelStore {
-  data: Hero[] | null;
+export interface MarvelStore<T> {
+  data: T[] | null;
   isLoading: boolean;
   error: Error | null;
-  setData: (data: Hero[]) => void;
-  appendData: (data: Hero[]) => void;
+  setData: (data: T[]) => void;
+  appendData: (data: T[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   setError: (error: Error | null) => void;
 }
 
-const useHeroStore = create<MarvelStore>(set => ({
-  data: null,
-  isLoading: false,
-  error: null,
-  setData: data => set({data}),
-  appendData: newData =>
-    set(state => {
-      const currentData = state.data ?? [];
-      const uniqueHeroes = [
-        ...currentData,
-        ...newData.filter(
-          newHero =>
-            !currentData.some(existingHero => existingHero.id === newHero.id),
-        ),
-      ];
+const createMarvelStore = <T extends {id: number}>() =>
+  create<MarvelStore<T>>(set => ({
+    data: null,
+    isLoading: false,
+    error: null,
+    setData: data => set({data}),
+    appendData: newData =>
+      set(state => {
+        const currentData = state.data ?? [];
+        const uniqueData = [
+          ...currentData,
+          ...newData.filter(
+            newData =>
+              !currentData.some(existingData => existingData.id === newData.id),
+          ),
+        ];
 
-      return {data: uniqueHeroes};
-    }),
-  setIsLoading: isLoading => set({isLoading}),
-  setError: error => set({error}),
-}));
+        return {data: uniqueData};
+      }),
+    setIsLoading: isLoading => set({isLoading}),
+    setError: error => set({error}),
+  }));
 
-export default useHeroStore;
+export const useHeroStore = createMarvelStore<Hero>();
+export const useComicStore = createMarvelStore<Comic>();

@@ -7,7 +7,7 @@ import {Home} from '@/screens/home/Home.tsx';
 import {rootScreenOptions} from '@/navigators/conf/animation.ts';
 import {HeroList} from '@/screens/hero/HeroList.tsx';
 import {BasicHeader} from '@/navigators/conf/basicHeader.tsx';
-import {Hero, HeroRouteProps} from '@/screens/hero/Hero.tsx';
+import {Hero, HeroRouteProps} from '@/screens/hero/details/Hero.tsx';
 import {Comics} from '@/screens/comics/Comics.tsx';
 import {Events} from '@/screens/events/Events.tsx';
 import {Series} from '@/screens/series/Series.tsx';

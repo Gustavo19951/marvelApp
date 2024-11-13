@@ -7,5 +7,6 @@ export const imageMarvel = (url: string, extension: string) => {
     privateKey: MARVEL_PRIVATE_KEY,
     publicKey: MARVEL_PUBLIC_KEY,
   });
-  return `${url}.${extension}?apikey=${MARVEL_PUBLIC_KEY}&hash=${hash}&ts=${timestamp}`;
+  const secureUrl = url.replace(/^http:\/\//, 'https://');
+  return `${secureUrl}.${extension}?apikey=${MARVEL_PUBLIC_KEY}&hash=${hash}&ts=${timestamp}`;
 };

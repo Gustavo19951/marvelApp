@@ -1,8 +1,13 @@
 import apiMarvel from '@/conf/apiMarvel.ts';
 import {ApisauceInstance} from 'apisauce';
-import {MarvelHeroesListResponse} from '@/type/marvel.ts';
+import {
+  MarvelComicsListResponse,
+  MarvelHeroesListResponse,
+} from '@/type/marvel.ts';
 
-export type MarvelResponse = MarvelHeroesListResponse;
+export type MarvelResponse =
+  | MarvelHeroesListResponse
+  | MarvelComicsListResponse;
 
 type ProxyHandler<T, P extends string> = {
   get?(
@@ -44,22 +49,21 @@ export const marvelProxy = new Proxy<MarvelResponse>(
       if (url === 'prototype' || url === '$$typeof') {
         return;
       }
-      const values = target;
 
       return new Promise<T>(async (resolve, reject) => {
-        if (values.results[url] !== undefined) {
-          resolve(values.results[url] as T);
+        if (target.results[url] !== undefined) {
+          resolve(target.results[url] as T);
           return;
         }
 
         try {
-          const response = await values.apiInstance.get<T>(url);
+          const response = await target.apiInstance.get<T>(url);
           const {data} = response;
 
           if (response.status !== 200 || !data) {
             throw new Error('Error fetching data');
           }
-          values.results[url] = data;
+          target.results[url] = data;
           resolve(data);
         } catch (e) {
           reject(e);

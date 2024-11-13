@@ -10,9 +10,47 @@ export type MarvelHeroesListResponse = {
     limit: number;
     total: number;
     count: number;
-    results: Hero[];
+    results: Hero[] | Comic[];
   };
 };
+
+export interface MarvelComicsListResponse {
+  code: number;
+  status: string;
+  copyright: string;
+  attributionText: string;
+  data: {
+    offset: number;
+    limit: number;
+    total: number;
+    count: number;
+    results: Comic[];
+  };
+}
+
+export interface Comic {
+  id: number;
+  title: string;
+  issueNumber: number;
+  description: string;
+  pageCount: number;
+  thumbnail: Thumbnail;
+  creators: CreatorList;
+}
+
+interface Thumbnail {
+  path: string;
+  extension: string;
+}
+
+interface CreatorList {
+  items: Creator[];
+}
+
+interface Creator {
+  name: string;
+  role: string;
+}
 
 export type Hero = {
   id: number;

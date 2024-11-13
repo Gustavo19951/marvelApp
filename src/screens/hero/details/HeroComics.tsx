@@ -1,7 +1,3 @@
-import {useState, useEffect} from 'react';
-import useInfiniteScroll, {
-  ParamsInfiniteScroll,
-} from '@/hooks/useInfiniteScroll.ts';
 import {
   ActivityIndicator,
   FlatList,
@@ -9,19 +5,29 @@ import {
   Text,
   View,
 } from 'react-native';
-import Preview from '@/screens/hero/Preview.tsx';
+import {FC, useEffect, useState} from 'react';
+import useInfiniteScroll, {
+  ParamsInfiniteScroll,
+} from '@/hooks/useInfiniteScroll.ts';
 import {Colors} from '@/theme/Theme.ts';
-import {Hero} from '@/type/marvel.ts';
+import {Comic} from '@/type/marvel.ts';
+import {useComicStore} from '@/store/marvel.ts';
+import ComicPreview from '@/screens/hero/details/ComicPreview.tsx';
 
-export const HeroList = () => {
+interface IHeroComics {
+  id: number;
+}
+export const HeroComics: FC<IHeroComics> = ({id}) => {
+  const {setData} = useComicStore();
   const [offset, setOffset] = useState(0);
   const initialParams: ParamsInfiniteScroll = {limit: 20, offset};
   const {data, isLoading, error, handleFetch, hasMore} = useInfiniteScroll({
-    url: '/characters',
-    type: 'hero',
+    url: `/characters/${id}/comics`,
+    type: 'comic',
   });
 
   useEffect(() => {
+    setData([]);
     handleFetch(initialParams).then();
   }, []);
 
@@ -37,8 +43,8 @@ export const HeroList = () => {
     <View style={styles.root}>
       {error && <Text style={{color: 'red'}}>Error: {error.message}</Text>}
       <FlatList
-        data={data as Hero[]}
-        renderItem={({item}) => <Preview {...item} />}
+        data={data as Comic[]}
+        renderItem={({item}) => <ComicPreview {...item} />}
         keyExtractor={item => item.id.toString()}
         ListFooterComponent={
           isLoading ? (
@@ -58,6 +64,8 @@ export const HeroList = () => {
 
 const styles = StyleSheet.create({
   root: {
+    flex: 1,
+    height: '100%',
     paddingHorizontal: 22,
   },
 });

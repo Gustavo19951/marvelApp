@@ -18,7 +18,6 @@ const Preview: FC<Hero> = memo(props => {
   const {id, thumbnail, name, comics, events, series, stories} = props;
   const navigation = useNavigation<RootNavigationProp>();
   const imageUri = imageMarvel(thumbnail.path, thumbnail.extension);
-
   return (
     <Pressable
       style={styles.root}
@@ -51,9 +50,7 @@ const Preview: FC<Hero> = memo(props => {
         </View>
       </View>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>
-          {id} {name}
-        </Text>
+        <Text style={styles.title}>{name}</Text>
       </View>
     </Pressable>
   );
@@ -70,6 +67,7 @@ const styles = StyleSheet.create({
   },
   tagContainer: {
     position: 'absolute',
+    zIndex: 1000,
     right: 10,
     top: 10,
     rowGap: 10,
