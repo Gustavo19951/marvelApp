@@ -16,19 +16,19 @@ export const States = () => {
       id: '2',
       title: 'Comics',
       icon: <AvengersSVG />,
-      navigateTo: 'about',
+      navigateTo: 'comics',
     },
     {
       id: '3',
       title: 'Series',
       icon: <MarvelSVG />,
-      navigateTo: 'about',
+      navigateTo: 'series',
     },
     {
       id: '4',
       title: 'Eventos',
       icon: <EventSVG />,
-      navigateTo: 'about',
+      navigateTo: 'events',
     },
     {
       id: '5',

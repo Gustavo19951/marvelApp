@@ -1,5 +1,5 @@
 import {Text, Image, Pressable, StyleSheet, View} from 'react-native';
-import {FC} from 'react';
+import {FC, memo} from 'react';
 
 import {imageMarvel} from '@/conf/imageMarvel.ts';
 import {Colors} from '@/theme/Theme.ts';
@@ -10,50 +10,63 @@ import {
   BookOpenText,
 } from 'lucide-react-native';
 import {Hero} from '@/type/marvel.ts';
+import {useNavigation} from '@react-navigation/native';
+import {RootNavigationProp} from '@/navigators/type/root.ts';
+import {SharedElement} from 'react-navigation-shared-element';
 
-export const Preview: FC<Hero> = ({
-  thumbnail,
-  name,
-  comics,
-  series,
-  stories,
-}) => {
+const Preview: FC<Hero> = memo(props => {
+  const {id, thumbnail, name, comics, events, series, stories} = props;
+  const navigation = useNavigation<RootNavigationProp>();
   const imageUri = imageMarvel(thumbnail.path, thumbnail.extension);
+
   return (
-    <Pressable style={styles.root}>
-      <Image source={{uri: imageUri}} style={styles.image} />
+    <Pressable
+      style={styles.root}
+      onPress={() =>
+        navigation.navigate('hero', {item: props, image: imageUri})
+      }>
+      <SharedElement id={`item.${id}`}>
+        <Image
+          source={{uri: imageUri}}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </SharedElement>
       <View style={styles.tagContainer}>
         <View style={styles.tagOption}>
-          <BookOpenText color={Colors.white} size={20} />
+          <BookOpenText color={Colors.white} size={20} strokeWidth={1} />
           <Text style={styles.tagText}>{comics.available}</Text>
         </View>
         <View style={styles.tagOption}>
-          <CalendarDays color={Colors.white} size={20} />
-          <Text style={styles.tagText}>{comics.available}</Text>
+          <CalendarDays color={Colors.white} size={20} strokeWidth={1} />
+          <Text style={styles.tagText}>{events.available}</Text>
         </View>
         <View style={styles.tagOption}>
-          <Clapperboard color={Colors.white} size={20} />
+          <Clapperboard color={Colors.white} size={20} strokeWidth={1} />
           <Text style={styles.tagText}>{series.available}</Text>
         </View>
         <View style={styles.tagOption}>
-          <LibraryBig color={Colors.white} size={20} />
+          <LibraryBig color={Colors.white} size={20} strokeWidth={1} />
           <Text style={styles.tagText}>{stories.available}</Text>
         </View>
       </View>
       <View style={styles.titleContainer}>
-        <Text>{name}</Text>
+        <Text style={styles.title}>
+          {id} {name}
+        </Text>
       </View>
     </Pressable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   root: {
     position: 'relative',
   },
   image: {
-    aspectRatio: 16 / 9,
+    aspectRatio: 1,
     borderRadius: 10,
+    backgroundColor: Colors.gray['900'],
   },
   tagContainer: {
     position: 'absolute',
@@ -72,7 +85,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   tagText: {
-    fontSize: 13,
+    fontSize: 18,
+  },
+  title: {
+    fontSize: 18,
   },
   titleContainer: {
     position: 'absolute',
@@ -85,3 +101,5 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 9,
   },
 });
+
+export default Preview;

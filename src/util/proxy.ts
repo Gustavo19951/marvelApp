@@ -2,15 +2,19 @@ import apiMarvel from '@/conf/apiMarvel.ts';
 import {ApisauceInstance} from 'apisauce';
 import {MarvelHeroesListResponse} from '@/type/marvel.ts';
 
-export type MarvelResponse = {
-  results: {[key: string]: MarvelHeroesListResponse | undefined};
-  apiInstance: ApisauceInstance;
-};
+export type MarvelResponse = MarvelHeroesListResponse;
 
 type ProxyHandler<T, P extends string> = {
-  get?(target: T, p: P, receiver: any): any;
+  get?(
+    target: {
+      results: {[key in P]: T | undefined};
+      apiInstance: ApisauceInstance;
+    },
+    p: P,
+    receiver: any,
+  ): any;
   set?(
-    target: {results: {[key in P]?: T}},
+    target: {results: {[key in P]?: T}; apiInstance: ApisauceInstance},
     p: P,
     value: any,
     receiver: any,
@@ -18,7 +22,7 @@ type ProxyHandler<T, P extends string> = {
 };
 
 declare const Proxy: {
-  new <T extends object>(
+  new <T extends MarvelResponse>(
     target: {results: {[key in string]: T}; apiInstance: ApisauceInstance},
     handler: ProxyHandler<T, string>,
   ): {[key: string]: Promise<T>};
@@ -30,13 +34,13 @@ export const marvelProxy = new Proxy<MarvelResponse>(
     results: {},
   },
   {
-    get: function <T extends MarvelHeroesListResponse>(
+    get: <T extends MarvelResponse>(
       target: {
         results: {[key: string]: T | undefined};
         apiInstance: ApisauceInstance;
       },
       url: string,
-    ) {
+    ) => {
       if (url === 'prototype' || url === '$$typeof') {
         return;
       }

@@ -8,6 +8,11 @@ import {About} from '@/screens/about/About.tsx';
 import {rootScreenOptions} from '@/navigators/conf/animation.ts';
 import {HeroList} from '@/screens/hero/HeroList.tsx';
 import {BasicHeader} from '@/navigators/conf/basicHeader.tsx';
+import {Hero, HeroRouteProps} from '@/screens/hero/Hero.tsx';
+import {RouteProp} from '@react-navigation/native';
+import {Comics} from '@/screens/comics/Comics.tsx';
+import {Events} from '@/screens/events/Events.tsx';
+import {Series} from '@/screens/series/Series.tsx';
 
 const RootStack = createSharedElementStackNavigator<RootRouteList>();
 
@@ -21,6 +26,30 @@ export const Root = () => {
     return (
       <>
         <RootStack.Screen name="home" component={Home} />
+        <RootStack.Screen
+          name="comics"
+          options={{
+            ...BasicHeader,
+            title: 'Comics',
+          }}
+          component={Comics}
+        />
+        <RootStack.Screen
+          name="events"
+          options={{
+            ...BasicHeader,
+            title: 'Eventos',
+          }}
+          component={Events}
+        />
+        <RootStack.Screen
+          name="series"
+          options={{
+            ...BasicHeader,
+            title: 'Series',
+          }}
+          component={Series}
+        />
         <RootStack.Screen
           name="about"
           options={{
@@ -39,7 +68,11 @@ export const Root = () => {
         />
         <RootStack.Screen
           name="hero"
-          component={Home}
+          component={Hero}
+          options={({route}: HeroRouteProps) => ({
+            ...BasicHeader,
+            title: route.params?.item.name || 'Personajes',
+          })}
           sharedElements={SharedElementConf}
         />
       </>

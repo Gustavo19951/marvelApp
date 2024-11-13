@@ -8,7 +8,15 @@ export interface IStateOption {
   id: string;
   title: string;
   icon: JSX.Element;
-  navigateTo: 'auth' | 'home' | 'heroList' | 'hero' | 'about';
+  navigateTo:
+    | 'auth'
+    | 'home'
+    | 'heroList'
+    | 'hero'
+    | 'about'
+    | 'comics'
+    | 'events'
+    | 'series';
 }
 export const StateOption: FC<IStateOption> = ({title, icon, navigateTo}) => {
   const navigation = useNavigation<RootNavigationProp>();
